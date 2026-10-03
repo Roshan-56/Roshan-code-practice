@@ -1,0 +1,521 @@
+[
+  {
+    "id": "pivot-index",
+    "title": "Find Pivot Index",
+    "category": "Arrays",
+    "difficulty": "Easy",
+    "pattern": "Prefix sums",
+    "description": "Find the first index where the sum of earlier elements equals the sum of later elements. Exclude the element at the index from both sums. Return -1 when no such index exists.",
+    "constraints": [
+      "1 ≤ n ≤ 10,000",
+      "Values may be negative, zero, or positive.",
+      "Return the leftmost valid index."
+    ],
+    "examples": [
+      {
+        "input": "[1, 7, 3, 6, 5, 6]",
+        "output": "3",
+        "note": "Both sides sum to 11."
+      },
+      {
+        "input": "[2, 1, -1]",
+        "output": "0",
+        "note": "An empty side has sum 0."
+      },
+      {
+        "input": "[1, 2, 3]",
+        "output": "-1",
+        "note": "No balanced position exists."
+      }
+    ],
+    "hints": [
+      "Can one total sum help you avoid summing both sides at every index?",
+      "Keep a running left sum. The right sum is total − left − current.",
+      "Check the equality before adding the current element to the left sum."
+    ],
+    "steps": [
+      "Compute the total once.",
+      "Scan left to right, comparing left with total − left − current.",
+      "Return the first matching index, or -1 after the scan."
+    ],
+    "solutions": {
+      "python": "def pivot_index(nums):\n    total = sum(nums)\n    left = 0\n    for i, value in enumerate(nums):\n        if left == total - left - value:\n            return i\n        left += value\n    return -1\n",
+      "c": "int pivot_index(const int *nums, int n) {\n    long long total = 0, left = 0;\n    for (int i = 0; i < n; i++) total += nums[i];\n    for (int i = 0; i < n; i++) {\n        if (left == total - left - nums[i]) return i;\n        left += nums[i];\n    }\n    return -1;\n}\n"
+    },
+    "starters": {
+      "python": "def pivot_index(nums):\n    # Return the leftmost pivot index.\n    pass\n",
+      "c": "int pivot_index(const int *nums, int n) {\n    // TODO: return the leftmost pivot index.\n    return -1;\n}\n"
+    },
+    "time": "O(n)",
+    "space": "O(1)",
+    "complexityExplanation": "Two linear scans take O(n) time. Only total, left and the index are retained, so auxiliary space is O(1).",
+    "source": "https://leetcode.com/problems/find-pivot-index/"
+  },
+  {
+    "id": "maximum-subarray",
+    "title": "Maximum Subarray",
+    "category": "Arrays",
+    "difficulty": "Medium",
+    "pattern": "Kadane’s algorithm",
+    "description": "Return the greatest sum among all nonempty contiguous subarrays. A subarray keeps the original order and contains consecutive elements.",
+    "constraints": [
+      "1 ≤ n ≤ 100,000",
+      "−10,000 ≤ nums[i] ≤ 10,000",
+      "The chosen subarray must contain at least one element."
+    ],
+    "examples": [
+      {
+        "input": "[-2, 1, -3, 4, -1, 2, 1, -5, 4]",
+        "output": "6",
+        "note": "[4, -1, 2, 1] has the largest sum."
+      },
+      {
+        "input": "[-8, -3, -6]",
+        "output": "-3",
+        "note": "All-negative arrays still need a nonempty result."
+      },
+      {
+        "input": "[5]",
+        "output": "5",
+        "note": "One element is a valid subarray."
+      }
+    ],
+    "hints": [
+      "At each position, should you extend the previous subarray or start a new one?",
+      "Track the best sum ending here separately from the best sum anywhere.",
+      "Initialize both sums with the first element; starting at zero breaks all-negative cases."
+    ],
+    "steps": [
+      "Initialize ending and best with the first element.",
+      "Update ending = max(current, ending + current).",
+      "Update best at every position and return it."
+    ],
+    "solutions": {
+      "python": "def max_subarray(nums):\n    ending = best = nums[0]\n    for i in range(1, len(nums)):\n        ending = max(nums[i], ending + nums[i])\n        best = max(best, ending)\n    return best\n",
+      "c": "long long max_subarray(const int *nums, int n) {\n    long long ending = nums[0], best = nums[0];\n    for (int i = 1; i < n; i++) {\n        long long extended = ending + nums[i];\n        ending = extended > nums[i] ? extended : nums[i];\n        if (ending > best) best = ending;\n    }\n    return best;\n}\n"
+    },
+    "starters": {
+      "python": "def max_subarray(nums):\n    # nums is nonempty.\n    pass\n",
+      "c": "long long max_subarray(const int *nums, int n) {\n    // nums is nonempty.\n    return 0;\n}\n"
+    },
+    "time": "O(n)",
+    "space": "O(1)",
+    "complexityExplanation": "Each element is processed once. The solution uses two running sums, with no sliced copy of the input.",
+    "source": "https://leetcode.com/problems/maximum-subarray/"
+  },
+  {
+    "id": "bfs-shortest-path",
+    "title": "BFS Shortest Path",
+    "category": "Graphs",
+    "difficulty": "Easy",
+    "pattern": "Breadth-first search",
+    "description": "Given an unweighted graph, return one shortest path from start to goal. Return an empty list if the goal is unreachable. Vertices are numbered 0 through V − 1. Use an adjacency list in Python and the supplied adjacency matrix in C.",
+    "constraints": [
+      "1 ≤ V ≤ 200",
+      "0 ≤ start, goal < V",
+      "Edges may be directed. A start equal to the goal has path [start]."
+    ],
+    "examples": [
+      {
+        "input": "graph = [[1, 2], [3], [4], [], [3]], start = 0, goal = 3",
+        "output": "[0, 1, 3]",
+        "note": "This path uses 2 edges."
+      },
+      {
+        "input": "graph = [[], []], start = 0, goal = 1",
+        "output": "[]",
+        "note": "The goal is unreachable."
+      },
+      {
+        "input": "graph = [[1], []], start = 0, goal = 0",
+        "output": "[0]",
+        "note": "No edges are needed."
+      }
+    ],
+    "hints": [
+      "In an unweighted graph, which traversal visits vertices by increasing distance?",
+      "Store the predecessor of each vertex when it first enters the queue.",
+      "Walk backward from goal through predecessors, then reverse the path."
+    ],
+    "steps": [
+      "Mark start visited and enqueue it.",
+      "Process neighbors in queue order; record each first predecessor.",
+      "If goal was reached, reconstruct its predecessor chain."
+    ],
+    "solutions": {
+      "python": "from collections import deque\n\ndef bfs_path(graph, start, goal):\n    parent = [-1] * len(graph)\n    parent[start] = start\n    queue = deque([start])\n    while queue:\n        node = queue.popleft()\n        if node == goal:\n            break\n        for neighbor in graph[node]:\n            if parent[neighbor] == -1:\n                parent[neighbor] = node\n                queue.append(neighbor)\n    if parent[goal] == -1:\n        return []\n    path = [goal]\n    while path[-1] != start:\n        path.append(parent[path[-1]])\n    return path[::-1]\n",
+      "c": "// matrix is a flat V-by-V adjacency matrix; nonzero means edge.\n// Caller provides out[V]. Return the path length (0 if unreachable).\nint bfs_path(const int *matrix, int V, int start, int goal, int *out) {\n    int parent[V], queue[V], head = 0, tail = 0;\n    for (int i = 0; i < V; i++) parent[i] = -1;\n    parent[start] = start;\n    queue[tail++] = start;\n    while (head < tail) {\n        int node = queue[head++];\n        if (node == goal) break;\n        for (int next = 0; next < V; next++) {\n            if (matrix[node * V + next] && parent[next] == -1) {\n                parent[next] = node;\n                queue[tail++] = next;\n            }\n        }\n    }\n    if (parent[goal] == -1) return 0;\n    int len = 0, node = goal;\n    for (;;) {\n        out[len++] = node;\n        if (node == start) break;\n        node = parent[node];\n    }\n    for (int i = 0; i < len / 2; i++) {\n        int tmp = out[i]; out[i] = out[len-1-i]; out[len-1-i] = tmp;\n    }\n    return len;\n}\n"
+    },
+    "starters": {
+      "python": "def bfs_path(graph, start, goal):\n    # graph[v] lists outgoing neighbors.\n    pass\n",
+      "c": "// V <= 200. matrix is flat V-by-V. Caller provides out[V].\nint bfs_path(const int *matrix, int V, int start, int goal, int *out) {\n    // Return path length, or 0 if unreachable.\n    return 0;\n}\n"
+    },
+    "time": {
+      "python": "O(V + E)",
+      "c": "O(V²)"
+    },
+    "space": "O(V)",
+    "complexityExplanation": "Python scans each adjacency-list edge once: O(V + E). The C matrix version scans V possible neighbors per visited vertex: O(V²). Both use O(V) auxiliary space for the queue and predecessors. Input graph storage and returned path are excluded.",
+    "source": ""
+  },
+  {
+    "id": "course-schedule",
+    "title": "Course Schedule II",
+    "category": "Graphs",
+    "difficulty": "Medium",
+    "pattern": "Topological sort",
+    "description": "Courses are numbered 0 through V − 1. Each prerequisite pair [course, prerequisite] requires the second course to come first. Return any valid order of all courses. Return an empty list when dependencies contain a cycle.",
+    "constraints": [
+      "1 ≤ V ≤ 2,000",
+      "Prerequisite pairs are unique and use valid course IDs.",
+      "No pair uses the same course twice."
+    ],
+    "examples": [
+      {
+        "input": "V = 4, prerequisites = [[1, 0], [2, 0], [3, 1], [3, 2]]",
+        "output": "[0, 1, 2, 3]",
+        "note": "[0, 2, 1, 3] is also valid."
+      },
+      {
+        "input": "V = 2, prerequisites = [[0, 1], [1, 0]]",
+        "output": "[]",
+        "note": "The dependency cycle prevents a full order."
+      },
+      {
+        "input": "V = 1, prerequisites = []",
+        "output": "[0]",
+        "note": "A course without prerequisites is ready."
+      }
+    ],
+    "hints": [
+      "Which courses are available before completing any other course?",
+      "Track the number of unmet prerequisites (indegree) and queue all zero-indegree courses.",
+      "After taking a course, reduce its dependents’ indegrees. Fewer than V processed courses indicates a cycle."
+    ],
+    "steps": [
+      "Build edges from prerequisite to course and count indegrees.",
+      "Queue all courses with indegree zero.",
+      "Process each edge once; accept the order only if it contains every course."
+    ],
+    "solutions": {
+      "python": "from collections import deque\n\ndef course_order(V, prerequisites):\n    graph = [[] for _ in range(V)]\n    indegree = [0] * V\n    for course, prerequisite in prerequisites:\n        graph[prerequisite].append(course)\n        indegree[course] += 1\n    queue = deque(i for i in range(V) if indegree[i] == 0)\n    order = []\n    while queue:\n        node = queue.popleft()\n        order.append(node)\n        for neighbor in graph[node]:\n            indegree[neighbor] -= 1\n            if indegree[neighbor] == 0:\n                queue.append(neighbor)\n    return order if len(order) == V else []\n",
+      "c": "#include <stdlib.h>\n// pairs is flat [course, prerequisite, ...], E pairs.\n// Caller provides out[V]. Return V on success, 0 for a cycle, -1 on allocation failure.\nint course_order(int V, const int *pairs, int E, int *out) {\n    int *head = malloc((size_t)V * sizeof(int));\n    int *degree = calloc((size_t)V, sizeof(int));\n    int *queue = malloc((size_t)V * sizeof(int));\n    int *to = malloc((size_t)(E ? E : 1) * sizeof(int));\n    int *next = malloc((size_t)(E ? E : 1) * sizeof(int));\n    if (!head || !degree || !queue || !to || !next) {\n        free(head); free(degree); free(queue); free(to); free(next); return -1;\n    }\n    for (int i = 0; i < V; i++) head[i] = -1;\n    for (int e = 0; e < E; e++) {\n        int course = pairs[2*e], pre = pairs[2*e+1];\n        to[e] = course; next[e] = head[pre]; head[pre] = e;\n        degree[course]++;\n    }\n    int front = 0, back = 0, count = 0;\n    for (int i = 0; i < V; i++) if (!degree[i]) queue[back++] = i;\n    while (front < back) {\n        int node = queue[front++]; out[count++] = node;\n        for (int e = head[node]; e != -1; e = next[e]) {\n            int neighbor = to[e];\n            if (--degree[neighbor] == 0) queue[back++] = neighbor;\n        }\n    }\n    free(head); free(degree); free(queue); free(to); free(next);\n    return count == V ? V : 0;\n}\n"
+    },
+    "starters": {
+      "python": "def course_order(V, prerequisites):\n    # Return a valid order, or [] for a cycle.\n    pass\n",
+      "c": "// Caller provides out[V]. pairs contains E flat [course, prerequisite] pairs.\nint course_order(int V, const int *pairs, int E, int *out) {\n    return 0;\n}\n"
+    },
+    "time": "O(V + E)",
+    "space": "O(V + E)",
+    "complexityExplanation": "Building and processing the adjacency list takes O(V + E) time and space, including the internally built graph. The input pairs and returned order are excluded.",
+    "source": "https://leetcode.com/problems/course-schedule-ii/"
+  },
+  {
+    "id": "tree-traversals",
+    "title": "Binary Tree Traversals",
+    "category": "Trees",
+    "difficulty": "Easy",
+    "pattern": "Depth-first search",
+    "description": "Return the preorder, inorder, and postorder sequences of a binary tree. Preorder visits root, left, right; inorder visits left, root, right; postorder visits left, right, root. An empty tree produces three empty sequences.",
+    "constraints": [
+      "0 ≤ number of nodes ≤ 500",
+      "Height ≤ 200 for these recursive reference implementations.",
+      "Python uses Node(val, left, right). C uses struct Node."
+    ],
+    "examples": [
+      {
+        "input": "root = [1, 2, 3, 4, 5, 6, 7] (level order)",
+        "output": "pre: [1,2,4,5,3,6,7]; in: [4,2,5,1,6,3,7]; post: [4,5,2,6,7,3,1]",
+        "note": "Move the root visit to change traversal order."
+      },
+      {
+        "input": "root = []",
+        "output": "pre: []; in: []; post: []",
+        "note": "All outputs are empty."
+      }
+    ],
+    "hints": [
+      "Each order traverses the same tree. Only the position of the root visit changes.",
+      "Use one recursive walk with a visit before left, between children, and after right.",
+      "Always stop when the node is None or NULL."
+    ],
+    "steps": [
+      "Stop at empty children.",
+      "Append before left recursion for preorder and between recursions for inorder.",
+      "Append after right recursion for postorder."
+    ],
+    "solutions": {
+      "python": "class Node:\n    def __init__(self, val, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n\ndef traversals(root):\n    pre, ino, post = [], [], []\n    def visit(node):\n        if node is None:\n            return\n        pre.append(node.val)\n        visit(node.left)\n        ino.append(node.val)\n        visit(node.right)\n        post.append(node.val)\n    visit(root)\n    return pre, ino, post\n",
+      "c": "struct Node { int val; struct Node *left, *right; };\n// Caller supplies pre[n], ino[n], post[n] and zeroed counts.\nvoid traversals(struct Node *root, int *pre, int *ino, int *post,\n                int *p, int *i, int *q) {\n    if (!root) return;\n    pre[(*p)++] = root->val;\n    traversals(root->left, pre, ino, post, p, i, q);\n    ino[(*i)++] = root->val;\n    traversals(root->right, pre, ino, post, p, i, q);\n    post[(*q)++] = root->val;\n}\n"
+    },
+    "starters": {
+      "python": "class Node:\n    def __init__(self, val, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n\ndef traversals(root):\n    pass\n",
+      "c": "struct Node { int val; struct Node *left, *right; };\nvoid traversals(struct Node *root, int *pre, int *ino, int *post,\n                int *p, int *i, int *q) {\n    // Caller provides buffers and zeroed counts.\n}\n"
+    },
+    "time": "O(n)",
+    "space": "O(h)",
+    "complexityExplanation": "Every node is visited once. Recursion uses O(h) auxiliary space, where h is the tree height. The three returned sequences use O(n) output space, excluded from this check.",
+    "source": ""
+  },
+  {
+    "id": "tree-depth",
+    "title": "Maximum Depth of a Binary Tree",
+    "category": "Trees",
+    "difficulty": "Easy",
+    "pattern": "Recursive decomposition",
+    "description": "Return the number of nodes on the longest path from the root to a leaf. An empty tree has depth 0; a single node has depth 1.",
+    "constraints": [
+      "0 ≤ nodes ≤ 500 for this practice version",
+      "Height ≤ 200 for the recursive reference implementations.",
+      "Missing children are None in Python and NULL in C."
+    ],
+    "examples": [
+      {
+        "input": "root = [3, 9, 20, null, null, 15, 7] (level order)",
+        "output": "3",
+        "note": "The longest root-to-leaf path contains 3 nodes."
+      },
+      {
+        "input": "root = []",
+        "output": "0",
+        "note": "An empty tree has depth 0."
+      },
+      {
+        "input": "root = [1]",
+        "output": "1",
+        "note": "The root itself counts."
+      }
+    ],
+    "hints": [
+      "How does a tree’s depth relate to the depths of its two subtrees?",
+      "An empty subtree contributes zero.",
+      "For any real node, return 1 + max(left depth, right depth)."
+    ],
+    "steps": [
+      "Return 0 for an empty root.",
+      "Recursively compute both child depths.",
+      "Return one plus the greater depth."
+    ],
+    "solutions": {
+      "python": "class Node:\n    def __init__(self, val, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n\ndef max_depth(root):\n    if root is None:\n        return 0\n    return 1 + max(max_depth(root.left), max_depth(root.right))\n",
+      "c": "struct Node { int val; struct Node *left, *right; };\nint max_depth(struct Node *root) {\n    if (!root) return 0;\n    int left = max_depth(root->left), right = max_depth(root->right);\n    return 1 + (left > right ? left : right);\n}\n"
+    },
+    "starters": {
+      "python": "class Node:\n    def __init__(self, val, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n\ndef max_depth(root):\n    pass\n",
+      "c": "struct Node { int val; struct Node *left, *right; };\nint max_depth(struct Node *root) {\n    return 0;\n}\n"
+    },
+    "time": "O(n)",
+    "space": "O(h)",
+    "complexityExplanation": "Each node contributes one recursive call, giving O(n) time. Simultaneous calls are bounded by the height h: O(h) auxiliary stack space, or O(n) in a skewed tree.",
+    "source": "https://leetcode.com/problems/maximum-depth-of-binary-tree/"
+  },
+  {
+    "id": "coin-change",
+    "title": "Coin Change II",
+    "category": "Dynamic programming",
+    "difficulty": "Medium",
+    "pattern": "Unbounded knapsack",
+    "description": "Count combinations of unique positive coin denominations that sum to amount. Each denomination is available without limit. Different orders of the same coins count as one combination. Return 0 if the amount cannot be formed.",
+    "constraints": [
+      "0 ≤ amount ≤ 5,000",
+      "1 ≤ number of coins ≤ 300",
+      "Coin values are positive and distinct.",
+      "The final answer fits a signed 32-bit integer."
+    ],
+    "examples": [
+      {
+        "input": "amount = 5, coins = [1, 2, 5]",
+        "output": "4",
+        "note": "5; 2+2+1; 2+1+1+1; 1+1+1+1+1."
+      },
+      {
+        "input": "amount = 3, coins = [2]",
+        "output": "0",
+        "note": "Only even amounts can be formed."
+      },
+      {
+        "input": "amount = 0, coins = [2, 5]",
+        "output": "1",
+        "note": "There is one empty combination."
+      }
+    ],
+    "hints": [
+      "Let dp[s] count combinations for amount s. What should dp[0] be?",
+      "Put the coin loop outside the amount loop to avoid counting orderings.",
+      "For each coin, scan amounts upward and add dp[s − coin] to dp[s]."
+    ],
+    "steps": [
+      "Set dp[0] = 1 and all other counts to zero.",
+      "For each coin, update amounts from coin through amount.",
+      "Return dp[amount]."
+    ],
+    "solutions": {
+      "python": "def coin_change(amount, coins):\n    dp = [0] * (amount + 1)\n    dp[0] = 1\n    for coin in coins:\n        for value in range(coin, amount + 1):\n            dp[value] += dp[value - coin]\n    return dp[amount]\n",
+      "c": "#include <stdlib.h>\n// Returns -1 on allocation failure. Saturation prevents intermediate overflow;\n// it does not change the answer under the signed-32-bit-result constraint.\nint coin_change(int amount, const int *coins, int n) {\n    unsigned long long *dp = calloc((size_t)amount + 1, sizeof(*dp));\n    if (!dp) return -1;\n    dp[0] = 1;\n    const unsigned long long cap = 2147483648ULL;\n    for (int i = 0; i < n; i++) {\n        for (int s = coins[i]; s <= amount; s++) {\n            unsigned long long sum = dp[s] + dp[s - coins[i]];\n            dp[s] = sum < cap ? sum : cap;\n        }\n    }\n    int result = (int)dp[amount];\n    free(dp);\n    return result;\n}\n"
+    },
+    "starters": {
+      "python": "def coin_change(amount, coins):\n    # Count combinations, not permutations.\n    pass\n",
+      "c": "int coin_change(int amount, const int *coins, int n) {\n    return 0;\n}\n"
+    },
+    "time": "O(k × A)",
+    "space": "O(A)",
+    "complexityExplanation": "With k coin denominations and target amount A, the nested loops take O(k × A) time and the DP array takes O(A) space. This treats arithmetic as constant cost; Python uses arbitrary-precision counts.",
+    "source": "https://leetcode.com/problems/coin-change-ii/"
+  },
+  {
+    "id": "equal-partition",
+    "title": "Partition Equal Subset Sum",
+    "category": "Dynamic programming",
+    "difficulty": "Medium",
+    "pattern": "0/1 knapsack",
+    "description": "Decide whether a nonempty array of positive integers can be split into two groups with equal sums. Each element must belong to exactly one group.",
+    "constraints": [
+      "1 ≤ n ≤ 200",
+      "1 ≤ nums[i] ≤ 100",
+      "Each element may be selected at most once."
+    ],
+    "examples": [
+      {
+        "input": "[1, 5, 11, 5]",
+        "output": "true",
+        "note": "[11] and [1, 5, 5] both sum to 11."
+      },
+      {
+        "input": "[1, 2, 3, 5]",
+        "output": "false",
+        "note": "An odd total cannot be split equally."
+      },
+      {
+        "input": "[2, 2, 3, 5]",
+        "output": "false",
+        "note": "An even total alone is insufficient."
+      }
+    ],
+    "hints": [
+      "If the total sum is odd, can two equal integer sums exist?",
+      "Reduce the task to finding a subset with half the total sum.",
+      "Scan target sums downward so an element cannot be reused in the same iteration."
+    ],
+    "steps": [
+      "Reject an odd total and set target to half the total.",
+      "Use a boolean DP array with dp[0] = true.",
+      "For each value, update sums downward; return dp[target]."
+    ],
+    "solutions": {
+      "python": "def can_partition(nums):\n    total = sum(nums)\n    if total % 2:\n        return False\n    target = total // 2\n    dp = [False] * (target + 1)\n    dp[0] = True\n    for value in nums:\n        for s in range(target, value - 1, -1):\n            dp[s] = dp[s] or dp[s - value]\n    return dp[target]\n",
+      "c": "#include <stdlib.h>\n// Return 1 for true, 0 for false, -1 on allocation failure.\nint can_partition(const int *nums, int n) {\n    int total = 0;\n    for (int i = 0; i < n; i++) total += nums[i];\n    if (total % 2) return 0;\n    int target = total / 2;\n    unsigned char *dp = calloc((size_t)target + 1, sizeof(*dp));\n    if (!dp) return -1;\n    dp[0] = 1;\n    for (int i = 0; i < n; i++) {\n        for (int s = target; s >= nums[i]; s--)\n            dp[s] = dp[s] || dp[s - nums[i]];\n    }\n    int result = dp[target];\n    free(dp);\n    return result;\n}\n"
+    },
+    "starters": {
+      "python": "def can_partition(nums):\n    pass\n",
+      "c": "int can_partition(const int *nums, int n) {\n    return 0;\n}\n"
+    },
+    "time": "O(n × S)",
+    "space": "O(S)",
+    "complexityExplanation": "Let S be half the total sum. The algorithm takes O(n × S) time and O(S) auxiliary space. This is pseudo-polynomial, since it depends on numeric values.",
+    "source": "https://leetcode.com/problems/partition-equal-subset-sum/"
+  },
+  {
+    "id": "binary-search",
+    "title": "Binary Search",
+    "category": "Searching",
+    "difficulty": "Easy",
+    "pattern": "Halving the search interval",
+    "description": "Find target in a strictly increasing integer array. Return its zero-based index, or -1 when absent. Solve it without scanning every element.",
+    "constraints": [
+      "1 ≤ n ≤ 10,000",
+      "All elements are distinct and sorted ascending.",
+      "Target may lie outside the array’s range."
+    ],
+    "examples": [
+      {
+        "input": "nums = [-1, 0, 3, 5, 9, 12], target = 9",
+        "output": "4",
+        "note": "The value 9 is at index 4."
+      },
+      {
+        "input": "nums = [2, 4, 8], target = 5",
+        "output": "-1",
+        "note": "The target is absent."
+      },
+      {
+        "input": "nums = [7], target = 7",
+        "output": "0",
+        "note": "A single-element match."
+      }
+    ],
+    "hints": [
+      "A comparison with the middle value rules out half the remaining positions.",
+      "Use inclusive bounds lo and hi. Continue while lo ≤ hi.",
+      "Discard mid itself with lo = mid + 1 or hi = mid − 1 to guarantee progress."
+    ],
+    "steps": [
+      "Initialize bounds to the first and last indices.",
+      "Compare the middle value with target and keep only the appropriate half.",
+      "Return -1 when the interval is empty."
+    ],
+    "solutions": {
+      "python": "def binary_search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = lo + (hi - lo) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1\n",
+      "c": "int binary_search(const int *nums, int n, int target) {\n    int lo = 0, hi = n - 1;\n    while (lo <= hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (nums[mid] == target) return mid;\n        if (nums[mid] < target) lo = mid + 1;\n        else hi = mid - 1;\n    }\n    return -1;\n}\n"
+    },
+    "starters": {
+      "python": "def binary_search(nums, target):\n    pass\n",
+      "c": "int binary_search(const int *nums, int n, int target) {\n    return -1;\n}\n"
+    },
+    "time": "O(log n)",
+    "space": "O(1)",
+    "complexityExplanation": "The interval halves after every comparison, so worst-case time is O(log n). The iterative version retains only bounds and a midpoint.",
+    "source": "https://leetcode.com/problems/binary-search/"
+  },
+  {
+    "id": "rotated-search",
+    "title": "Search in Rotated Sorted Array",
+    "category": "Searching",
+    "difficulty": "Medium",
+    "pattern": "Modified binary search",
+    "description": "A strictly increasing array of distinct integers has been rotated by an unknown offset, possibly zero. Find target and return its index, or -1 when absent. Aim for logarithmic time.",
+    "constraints": [
+      "1 ≤ n ≤ 5,000",
+      "Values are distinct.",
+      "The input is a rotation of an ascending array."
+    ],
+    "examples": [
+      {
+        "input": "nums = [4, 5, 6, 7, 0, 1, 2], target = 0",
+        "output": "4",
+        "note": "The target is in the rotated right segment."
+      },
+      {
+        "input": "nums = [4, 5, 6, 7, 0, 1, 2], target = 3",
+        "output": "-1",
+        "note": "The target is absent."
+      },
+      {
+        "input": "nums = [1], target = 1",
+        "output": "0",
+        "note": "The rotation may be zero."
+      }
+    ],
+    "hints": [
+      "At least one half around the midpoint is sorted when values are distinct.",
+      "Check nums[lo] ≤ nums[mid] to identify a sorted left half.",
+      "Keep a sorted half only when target lies within its bounds; otherwise keep the other half."
+    ],
+    "steps": [
+      "Check the midpoint for a match.",
+      "Identify which half is sorted.",
+      "Use that half’s value bounds to discard half the interval."
+    ],
+    "solutions": {
+      "python": "def rotated_search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = lo + (hi - lo) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[lo] <= nums[mid]:\n            if nums[lo] <= target < nums[mid]:\n                hi = mid - 1\n            else:\n                lo = mid + 1\n        else:\n            if nums[mid] < target <= nums[hi]:\n                lo = mid + 1\n            else:\n                hi = mid - 1\n    return -1\n",
+      "c": "int rotated_search(const int *nums, int n, int target) {\n    int lo = 0, hi = n - 1;\n    while (lo <= hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (nums[mid] == target) return mid;\n        if (nums[lo] <= nums[mid]) {\n            if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;\n            else lo = mid + 1;\n        } else {\n            if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;\n            else hi = mid - 1;\n        }\n    }\n    return -1;\n}\n"
+    },
+    "starters": {
+      "python": "def rotated_search(nums, target):\n    pass\n",
+      "c": "int rotated_search(const int *nums, int n, int target) {\n    return -1;\n}\n"
+    },
+    "time": "O(log n)",
+    "space": "O(1)",
+    "complexityExplanation": "Distinct values let each iteration discard half the interval: O(log n) worst-case time. The iterative implementation uses O(1) auxiliary space. With duplicate values this bound would not be guaranteed.",
+    "source": "https://leetcode.com/problems/search-in-rotated-sorted-array/"
+  }
+]

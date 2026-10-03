@@ -1,0 +1,20 @@
+{
+ "lc-17": {
+  "kind": "practice",
+  "description": [
+   {"tag":"p","children":["You are building a letter-suggestion feature for a traditional telephone keypad. A user enters a short sequence of digits, and the feature must list every text sequence that those key presses could produce."]},
+   {"tag":"p","children":["Each digit contributes exactly one letter. Keep the digits in their original order, and independently choose one mapped letter for each position. Return all resulting strings; their order in the returned list does not matter."]},
+   {"tag":"p","children":["Input: a string named ",{"tag":"code","children":["digits"]}," containing only the digits 2 through 9. Output: a list of all corresponding letter combinations."]},
+   {"tag":"p","children":["Use this keypad mapping. The keys 0 and 1 do not supply any letters and are not part of a valid input:"]},
+   {"tag":"table","children":[{"tag":"thead","children":[{"tag":"tr","children":[{"tag":"th","children":["Digit"]},{"tag":"th","children":["Letters"]}]}]},{"tag":"tbody","children":[{"tag":"tr","children":[{"tag":"td","children":["2"]},{"tag":"td","children":["a b c"]}]},{"tag":"tr","children":[{"tag":"td","children":["3"]},{"tag":"td","children":["d e f"]}]},{"tag":"tr","children":[{"tag":"td","children":["4"]},{"tag":"td","children":["g h i"]}]},{"tag":"tr","children":[{"tag":"td","children":["5"]},{"tag":"td","children":["j k l"]}]},{"tag":"tr","children":[{"tag":"td","children":["6"]},{"tag":"td","children":["m n o"]}]},{"tag":"tr","children":[{"tag":"td","children":["7"]},{"tag":"td","children":["p q r s"]}]},{"tag":"tr","children":[{"tag":"td","children":["8"]},{"tag":"td","children":["t u v"]}]},{"tag":"tr","children":[{"tag":"td","children":["9"]},{"tag":"td","children":["w x y z"]}]}]}]}
+  ],
+  "examples": [
+   {"title":"Example 1","input":"digits = \"23\"","output":"[\"ad\", \"ae\", \"af\", \"bd\", \"be\", \"bf\", \"cd\", \"ce\", \"cf\"]","explanation":"The first position chooses from a, b, c; the second chooses from d, e, f. Every pairing must be included, giving 3 × 3 = 9 strings.","blocks":[]},
+   {"title":"Example 2","input":"digits = \"2\"","output":"[\"a\", \"b\", \"c\"]","explanation":"There is one position, so each letter on key 2 is one complete result.","blocks":[]},
+   {"title":"Example 3","input":"digits = \"79\"","output":"[\"pw\", \"px\", \"py\", \"pz\", \"qw\", \"qx\", \"qy\", \"qz\", \"rw\", \"rx\", \"ry\", \"rz\", \"sw\", \"sx\", \"sy\", \"sz\"]","explanation":"Keys 7 and 9 each have four letters. Their independent choices produce 16 strings.","blocks":[]}
+  ],
+  "constraints": [{"tag":"ul","children":[{"tag":"li","children":["The input contains between 1 and 4 digits, inclusive."]},{"tag":"li","children":["Every input character is one of 2, 3, 4, 5, 6, 7, 8, or 9."]},{"tag":"li","children":["Every result contains exactly one mapped letter per input position."]},{"tag":"li","children":["All combinations must be returned; list order is unrestricted."]}]}],
+  "followUp": [],
+  "attribution": {"label":"Original practice scenario, using the task requirements from the linked problem.","url":"https://leetcode.com/problems/letter-combinations-of-a-phone-number/"}
+ }
+}

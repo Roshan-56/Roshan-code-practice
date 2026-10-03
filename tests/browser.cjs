@@ -1,0 +1,48 @@
+/* Optional UI validation: npm install --no-save --package-lock=false playwright
+   npx playwright install chromium; npm start (in another terminal); node tests/browser.cjs */
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict');
+(async()=>{
+ const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||chromium.executablePath(),args:['--no-sandbox']});
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});const errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(process.env.TEST_URL||'http://127.0.0.1:3000');
+ await page.getByRole('heading',{name:'A little practice. A lot of progress.'}).waitFor();
+ await page.getByLabel('Search questions').fill('Find Pivot Index');
+ await page.getByRole('button',{name:/^Find Pivot Index/}).click();
+ assert.equal(await page.getByRole('link',{name:'Original problem on LeetCode'}).first().getAttribute('href'),'https://leetcode.com/problems/find-pivot-index/');
+ await page.getByRole('tab',{name:/Hints/}).click();
+ await page.getByRole('button',{name:'Reveal hint 1',exact:true}).click();
+ await page.getByText('Can one total sum help you avoid summing both sides at every index?').waitFor();
+ await page.getByRole('button',{name:'Reveal hint 2',exact:true}).click();
+ await page.getByRole('button',{name:'Reveal hint 3',exact:true}).click();
+ assert.equal(await page.getByRole('button',{name:'All hints revealed'}).isDisabled(),true);
+ await page.getByRole('tab',{name:'Solution',exact:true}).click();
+ await page.getByRole('button',{name:'Reveal solution',exact:true}).click();
+ await page.getByRole('dialog').getByRole('button',{name:'Reveal solution',exact:true}).click();
+ await page.getByText('Reference approach',{exact:true}).waitFor();
+ await page.getByLabel('Programming language').click();await page.getByRole('option',{name:'Java',exact:true}).click();
+ await page.getByText('No built-in reference code for Java.',{exact:false}).waitFor();
+ await page.getByLabel('Programming language').click();await page.getByRole('option',{name:'Python 3',exact:true}).click();
+ await page.getByRole('button',{name:'Sign in / Join'}).click();await page.getByRole('button',{name:'Create account',exact:true}).click();
+ const username='tester_'+Date.now().toString().slice(-10);await page.getByLabel('Username',{exact:true}).fill(username);await page.getByLabel('Password',{exact:true}).fill('test-password-long');
+ await page.getByRole('dialog').getByRole('button',{name:'Create account',exact:true}).click();await page.getByRole('button',{name:'Sign out'}).waitFor();
+ const draft='def pivot_index(nums):\n    return 3\n';await page.getByLabel('Solution code').fill(draft);await page.getByRole('button',{name:'Save draft',exact:true}).click();await page.getByText('Draft saved to your account.').waitFor();
+ await page.getByLabel('Time complexity',{exact:true}).click();await page.getByRole('option',{name:'O(n)',exact:true}).click();
+ await page.getByLabel('Space complexity',{exact:true}).click();await page.getByRole('option',{name:'O(1)',exact:true}).click();
+ await page.getByRole('button',{name:'Check complexity',exact:true}).click();await page.getByText('Both answers are correct.').waitFor();
+ await page.getByRole('button',{name:'Mark completed',exact:true}).click();await page.getByRole('button',{name:'Mark incomplete',exact:true}).waitFor();
+ await page.reload();await page.getByRole('button',{name:'Mark incomplete',exact:true}).waitFor();assert.equal(await page.getByLabel('Solution code').inputValue(),draft);
+ await page.getByRole('button',{name:'Add a question',exact:true}).click();const dialog=page.getByRole('dialog');
+ await dialog.getByLabel('Question title').fill('UI timestamp exercise '+Date.now());await dialog.getByLabel('Your original problem statement').fill('Given a sorted sequence of observation times, count the groups whose consecutive gaps are at most two. Input: [1,2,9,10]. Output: 2 groups. The sequence contains between 1 and 10000 integers.');await dialog.getByRole('button',{name:'Add question · earn 10 points'}).click();await page.getByText('Question added. You earned 10 points!').waitFor();
+ assert.match(await page.locator('.points-label').textContent(),/10/);
+ await page.getByLabel('Filter by company').selectOption('Google');await page.getByLabel('Filter by difficulty').selectOption('Hard');
+ assert.ok(await page.locator('.question-row').count());assert.ok((await page.locator('.question-row>.difficulty').allTextContents()).every(s=>s==='Hard'));
+ await page.screenshot({path:process.env.SCREENSHOT_DIR?process.env.SCREENSHOT_DIR+'/desktop.png':'/tmp/roshan-desktop.png',fullPage:false});
+ await page.setViewportSize({width:390,height:844});await page.getByRole('button',{name:'Open navigation'}).click();await page.locator('[data-slot="sheet-content"]').getByRole('button',{name:/Dynamic Programming/}).click();await page.getByRole('heading',{name:'Problem library'}).waitFor();
+ assert.ok(await page.locator('.question-row').count());assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true);
+ await page.screenshot({path:process.env.SCREENSHOT_DIR?process.env.SCREENSHOT_DIR+'/mobile.png':'/tmp/roshan-mobile.png',fullPage:false});
+ await page.getByRole('button',{name:/^Climbing Stairs/}).click().catch(async()=>page.locator('.question-title').first().click());await page.getByLabel('Programming language').click();await page.getByRole('option',{name:'C++',exact:true}).click();assert.match(await page.locator('.editor-file').textContent(),/cpp/);
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true);assert.deepEqual(errors,[]);
+ console.log('PASS: catalog filters, source links, progressive hints, reveal, language switching, signup, draft persistence, completion, points, desktop, and mobile.');await browser.close();
+})().catch(e=>{console.error(e);process.exit(1);});
