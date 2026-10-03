@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Roshan code practice
 
 A responsive interview practice website ready for GitHub and Render. Public visitors can browse and draft code; accounts keep private saved drafts and completion history. Users can contribute original questions and earn points.
@@ -121,3 +122,6 @@ This export is prepared for you to deploy. It has not been pushed to GitHub or d
 Stop the server with Ctrl+C. Copy the new source files into the existing project while retaining your `data/`, `.env`, and `.git`. The new question-cache table is created automatically; existing users, points, drafts, and completions are retained. Then run `npm ci --include=dev`, `npm run build`, `npm test`, and `npm start`, and refresh the browser.
 
 Question content is converted into a restricted data tree and rendered through React. Script tags, event attributes, frames, unsafe links, and unsupported image hosts are filtered. Source statements are a snapshot and may differ from the current LeetCode version. If a source is temporarily unavailable, the workspace displays a retry action and the original reference link.
+=======
+# Roshan-code-practice
+>>>>>>> 4c0c12f49019b956deafeaf6cb4ca687ed54ab8b
